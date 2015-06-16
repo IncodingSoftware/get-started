@@ -60,7 +60,7 @@
                               .AsHtmlAttributes()
                               .ToButton("Edit"))
                         @(Html.When(JqueryBind.Click)
-                              .AjaxHashPost(Url.Dispatcher().Push(new DeleteHumanCommand() { HumanId = each.For(r => r.Id) }))
+                              .AjaxPost(Url.Dispatcher().Push(new DeleteHumanCommand() { HumanId = each.For(r => r.Id) }))
                               .OnSuccess(dsl => dsl.WithId("PeopleTable").Core().Trigger.Incoding())
                               .AsHtmlAttributes()
                               .ToButton("Delete"))
