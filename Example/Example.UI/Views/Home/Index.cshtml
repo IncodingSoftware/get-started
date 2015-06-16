@@ -1,0 +1,36 @@
+@using Example.Domain
+@using Incoding.MetaLanguageContrib
+@using Incoding.MvcContrib
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="dialog"></div>
+
+<div>
+    <input type="text" id="Keyword"/>
+    @(Html.When(JqueryBind.Click)
+          .Direct()
+          .OnSuccess(dsl => dsl.WithId("PeopleTable").Core().Trigger.Incoding())
+          .AsHtmlAttributes()
+          .ToButton("Find"))
+</div>
+
+@(Html.When(JqueryBind.InitIncoding)
+      .AjaxGet(Url.Dispatcher().Query(new GetPeopleQuery { Keyword = Selector.Jquery.Id("Keyword") }).AsJson())
+      .OnSuccess(dsl => dsl.Self().Core().Insert.WithTemplateByUrl(Url.Dispatcher().AsView("~/Views/Home/HumanTmpl.cshtml")).Html())
+      .AsHtmlAttributes(new { id = "PeopleTable" })
+      .ToDiv())
+
+@(Html.When(JqueryBind.Click)
+      .AjaxGet(Url.Dispatcher().AsView("~/Views/Home/AddOrEditHuman.cshtml"))
+      .OnSuccess(dsl => dsl.WithId("dialog").Behaviors(inDsl =>
+                                                           {
+                                                               inDsl.Core().Insert.Html();
+                                                               inDsl.JqueryUI().Dialog.Open(option =>
+                                                                                                {
+                                                                                                    option.Resizable = false;
+                                                                                                    option.Title = "Add human";
+                                                                                                });
+                                                           }))
+      .AsHtmlAttributes()
+      .ToButton("Add new human"))

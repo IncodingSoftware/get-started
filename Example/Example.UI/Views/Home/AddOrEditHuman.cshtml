@@ -1,0 +1,55 @@
+﻿@using Example.Domain
+@using Incoding.Extensions
+@using Incoding.MetaLanguageContrib
+@using Incoding.MvcContrib
+@model Example.Domain.AddOrEditHumanCommand
+@using (Html.When(JqueryBind.Submit)
+            .PreventDefault()
+            .Submit()
+            .OnSuccess(dsl =>
+                           {
+                               dsl.WithId("PeopleTable").Core().Trigger.Incoding();
+                               dsl.WithId("dialog").JqueryUI().Dialog.Close()
+                                    .If(() => "ui-dialog-titlebar".ToClass().Length() > 0);
+                               dsl.WithId("dialog").Core().JQuery.Manipulation.Empty()
+                                  .If(() => "ui-dialog-titlebar".ToClass().Length() == 0);
+                               dsl.WithId("dialog").Core().JQuery.Attributes.AddClass("hide");
+                           })
+            .OnError(dsl => dsl.Self().Core().Form.Validation.Refresh())
+            .AsHtmlAttributes(new
+                                  {
+                                          action = Url.Dispatcher().Push(new AddOrEditHumanCommand()),
+                                          enctype = "multipart/form-data",
+                                          method = "POST"
+                                  })
+            .ToBeginTag(Html, HtmlTag.Form))
+{
+    <div>
+        @Html.HiddenFor(r => r.Id)
+        @Html.ForGroup(r => r.FirstName).TextBox(control => control.Label.Name = "First name")
+        <br/>
+        @Html.ForGroup(r => r.LastName).TextBox(control => control.Label.Name = "Last name")
+        <br/>
+        @Html.ForGroup(r => r.BirthDay).TextBox(control => control.Label.Name = "Birthday")
+        <br/>
+        @Html.ForGroup(r => r.Sex).DropDown(control => control.Input.Data = typeof(Sex).ToSelectList())
+    </div>
+
+    <div>
+        <input type="submit" value="Save"/>
+        @(Html.When(JqueryBind.Click)
+              .PreventDefault()
+              .StopPropagation()
+              .Direct()
+              .OnSuccess(dsl =>
+                             {
+                                 dsl.WithId("dialog").JqueryUI().Dialog.Close()
+                                    .If(() => "ui-dialog-titlebar".ToClass().Length() > 0);
+                                 dsl.WithId("dialog").Core().JQuery.Manipulation.Empty()
+                                    .If(() => "ui-dialog-titlebar".ToClass().Length() == 0);
+                                 dsl.WithId("dialog").Core().JQuery.Attributes.AddClass("hide");
+                             })
+              .AsHtmlAttributes()
+              .ToButton("Cancel"))
+    </div>
+}

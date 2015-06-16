@@ -1,0 +1,73 @@
+﻿@using Example.Domain
+@using Incoding.MetaLanguageContrib
+@using Incoding.MvcContrib
+@{
+    using (var template = Html.Incoding().Template<Human>())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    First name
+                </th>
+                <th>
+                    Last name
+                </th>
+                <th>
+                    Birthday
+                </th>
+                <th>
+                    Sex
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @using (var each = template.ForEach())
+            {
+                <tr>
+                    <td>
+                        @each.For(r => r.FirstName)
+                    </td>
+                    <td>
+                        @each.For(r => r.LastName)
+                    </td>
+                    <td>
+                        @each.For(r => r.Birthday)
+                    </td>
+                    <td>
+                        @each.For(r => r.Sex)
+                    </td>
+                    <td>
+                        @(Html.When(JqueryBind.Click)
+                              .AjaxGet(Url.Dispatcher().Model<AddOrEditHumanCommand>(new
+                                                                                         {
+                                                                                                 Id = each.For(r => r.Id),
+                                                                                                 FirstName = each.For(r => r.FirstName),
+                                                                                                 LastName = each.For(r => r.LastName),
+                                                                                                 BirthDay = each.For(r => r.Birthday),
+                                                                                                 Sex = each.For(r => r.Sex)
+                                                                                         }).AsView("~/Views/Home/AddOrEditHuman.cshtml"))
+                              .OnSuccess(dsl => dsl.WithId("dialog").Behaviors(inDsl =>
+                                                                                   {
+                                                                                       inDsl.Core().Insert.Html();
+                                                                                       inDsl.JqueryUI().Dialog.Open(option =>
+                                                                                                                        {
+                                                                                                                            option.Resizable = false;
+                                                                                                                            option.Title = "Edit human";
+                                                                                                                        });
+                                                                                   }))
+                              .AsHtmlAttributes()
+                              .ToButton("Edit"))
+                        @(Html.When(JqueryBind.Click)
+                              .AjaxHashPost(Url.Dispatcher().Push(new DeleteHumanCommand() { HumanId = each.For(r => r.Id) }))
+                              .OnSuccess(dsl => dsl.WithId("PeopleTable").Core().Trigger.Incoding())
+                              .AsHtmlAttributes()
+                              .ToButton("Delete"))
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
