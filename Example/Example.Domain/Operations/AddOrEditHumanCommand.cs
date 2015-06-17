@@ -48,8 +48,8 @@
 
             human.FirstName = FirstName;
             human.LastName = LastName;
-            human.Birthday = BirthDay.ToShortDateString();
-            human.Sex = Sex.ToLocalization();
+            human.Birthday = BirthDay;
+            human.Sex = Sex;
 
             Repository.SaveOrUpdate(human);
         }

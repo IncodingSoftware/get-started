@@ -2,7 +2,9 @@
 {
     #region << Using >>
 
+    using System;
     using Incoding.Data;
+    using Incoding.Quality;
 
     #endregion
 
@@ -10,15 +12,16 @@
     {
         #region Properties
 
-        public virtual string Birthday { get; set; }
+        public virtual DateTime Birthday { get; set; }
 
         public virtual string FirstName { get; set; }
 
+        [IgnoreCompare("Base field")]
         public virtual string Id { get; set; }
 
         public virtual string LastName { get; set; }
 
-        public virtual string Sex { get; set; }
+        public virtual Sex Sex { get; set; }
 
         #endregion
 

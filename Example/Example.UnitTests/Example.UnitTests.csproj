@@ -79,9 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MSpecAssemblyContext.cs" />
-    <Compile Include="Operations\When_add_human.cs" />
+    <Compile Include="Operations\When_get_people.cs" />
     <Compile Include="Operations\When_edit_human.cs" />
-    <Compile Include="Operations\When_get_people_query.cs" />
+    <Compile Include="Operations\When_add_human.cs" />
     <Compile Include="Persistences\When_save_Human.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\When_human_by_first_name.cs" />

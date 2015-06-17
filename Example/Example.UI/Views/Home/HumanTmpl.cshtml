@@ -2,13 +2,13 @@
 @using Incoding.MetaLanguageContrib
 @using Incoding.MvcContrib
 @{
-    using (var template = Html.Incoding().Template<Human>())
+    using (var template = Html.Incoding().Template<GetPeopleQuery.Response>())
     {
         <table class="table">
             <thead>
             <tr>
                 <th>
-                    First name
+                    Name
                 </th>
                 <th>
                     Last name

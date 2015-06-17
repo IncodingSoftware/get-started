@@ -1,5 +1,4 @@
 ﻿@using Example.Domain
-@using Incoding.Extensions
 @using Incoding.MetaLanguageContrib
 @using Incoding.MvcContrib
 @model Example.Domain.AddOrEditHumanCommand
@@ -9,11 +8,7 @@
             .OnSuccess(dsl =>
                            {
                                dsl.WithId("PeopleTable").Core().Trigger.Incoding();
-                               dsl.WithId("dialog").JqueryUI().Dialog.Close()
-                                    .If(() => "ui-dialog-titlebar".ToClass().Length() > 0);
-                               dsl.WithId("dialog").Core().JQuery.Manipulation.Empty()
-                                  .If(() => "ui-dialog-titlebar".ToClass().Length() == 0);
-                               dsl.WithId("dialog").Core().JQuery.Attributes.AddClass("hide");
+                               dsl.WithId("dialog").JqueryUI().Dialog.Close();
                            })
             .OnError(dsl => dsl.Self().Core().Form.Validation.Refresh())
             .AsHtmlAttributes(new
@@ -41,14 +36,7 @@
               .PreventDefault()
               .StopPropagation()
               .Direct()
-              .OnSuccess(dsl =>
-                             {
-                                 dsl.WithId("dialog").JqueryUI().Dialog.Close()
-                                    .If(() => "ui-dialog-titlebar".ToClass().Length() > 0);
-                                 dsl.WithId("dialog").Core().JQuery.Manipulation.Empty()
-                                    .If(() => "ui-dialog-titlebar".ToClass().Length() == 0);
-                                 dsl.WithId("dialog").Core().JQuery.Attributes.AddClass("hide");
-                             })
+              .OnSuccess(dsl => { dsl.WithId("dialog").JqueryUI().Dialog.Close(); })
               .AsHtmlAttributes()
               .ToButton("Cancel"))
     </div>
