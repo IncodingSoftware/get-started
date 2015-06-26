@@ -1,0 +1,33 @@
+﻿@using Example.Domain
+@using Incoding.MvcContrib
+@(Html.When(JqueryBind.Click)
+      .Direct()
+      .OnSuccess(dsl => dsl.WithId("customers").Core().Trigger.Incoding())
+      .AsHtmlAttributes()
+      .ToButton("Refresh"))
+
+@(Html.When(JqueryBind.InitIncoding)
+      .AjaxGet(Url.Dispatcher().Query(new GetCustomersQuery
+                                              ()).AsJson())
+      .OnSuccess(dsl =>
+                     {
+                         string urlToTmpl = Url.Dispatcher().AsView("~/Views/Customer/Table_Tmpl.cshtml");
+                         dsl.Self().Core().Insert.WithTemplateByUrl(urlToTmpl).Html();
+                     })
+      .AsHtmlAttributes()
+      .ToDiv())
+
+@Html.TextBoxFor(r => r.First)
+@Html.TextBoxFor(r => r.Last)
+
+@(Html.When(JqueryBind.Click)
+      .AjaxPost(Url.Dispatcher().Push(new AddCustomerCommand
+
+                                          {
+                                                  First = Html.Selector().Name(r => r.First),
+                                                  Last = Html.Selector().Name(r
+                                                                              => r.Last)
+                                          }))
+      .OnSuccess(dsl => dsl.WithId("customers").Core().Trigger.Incoding())
+      .AsHtmlAttributes()
+      .ToLink("Add"))

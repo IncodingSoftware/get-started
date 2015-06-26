@@ -20,8 +20,6 @@
                                       var query = Pleasure.Generator.Invent<GetPeopleQuery>();
                                       human = Pleasure.Generator.Invent<Human>();
 
-                                      expected = new List<GetPeopleQuery.Response>();
-
                                       mockQuery = MockQuery<GetPeopleQuery, List<GetPeopleQuery.Response>>
                                               .When(query)
                                               .StubQuery(whereSpecification: new HumanByFirstNameWhereSpec(query.Keyword)
@@ -41,8 +39,6 @@
         #region Establish value
 
         static MockMessage<GetPeopleQuery, List<GetPeopleQuery.Response>> mockQuery;
-
-        static List<GetPeopleQuery.Response> expected;
 
         static Human human;
 
