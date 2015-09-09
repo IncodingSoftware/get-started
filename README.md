@@ -1,20 +1,20 @@
-# get-started
-<p style="text-align: justify;"><em><strong>disclaimer:</strong> данная статья является пошаговым руководством, которое поможет ознакомиться с основными возможностями <strong>Incoding Framework</strong>. Результатом следования данному руководству будет приложение, реализующее работу с БД (CRUD + data filters) и полностью покрытое юнит-тестами.</em></p>
+<a href="http://incframework.com"><img class="aligncenter size-full wp-image-1738" src="http://blog.incframework.com/upload/IncFramework-logo.png" alt="IncFramework-logo" width="920" height="398" /></a>
+<p style="text-align: justify;"><em><strong>disclamer:</strong>this article is a step-by-step guide to help you to familiarize with the core functionality of Incoding Framework. Following the guide will result in an application that implements the work with the DB (CRUD + data filters) and fully covered with unit tests.</em></p>
 
-<h1 style="text-align: justify;">Часть 0. Введение.</h1>
-<p style="text-align: justify;">Для начала приведем краткое описание фреймворка<strong>. </strong><strong>Incoding</strong> <strong>Framework</strong> состоит из трех пакетов: Incoding framework – back-end проекта, Incoding Meta Language – front-end проекта и Incoding tests helpers – юнит-тесты для back-end’а. Эти пакеты устанавливаются независимо друг от друга, что позволяет интегрировать фреймворк в проект частями: Вы можете подключить только клиентскую или только серверную часть (тесты очень сильно связаны с серверной частью, поэтому их можно позиционировать как дополнение).</p>
-<p style="text-align: justify;">В проектах, написанных на <strong>Incoding Framework</strong>,<strong> </strong>в качестве серверной архитектуры используется <a title="Martin Fowler: CQRS" href="http://martinfowler.com/bliki/CQRS.html" target="_blank">CQRS</a>. В качестве основного инструмента построения клиентской части используется <a title="Habrahabr: Incoding rapid development framework" href="http://habrahabr.ru/post/209734/" target="_blank">Incoding Meta Language</a>. В целом <strong>Incoding Framework </strong>покрывает весь цикл разработки приложения.</p>
-<p style="text-align: justify;">Типичный solution, созданный с помощью <strong>Incoding Framework, </strong>имеет 3 проекта:</p>
+<h1 style="text-align: justify;">Part 0. Introduction</h1>
+<p style="text-align: justify;">Let us begin with a short description of Framework. Incoding Framework comprises three packages: Incoding framework – back-end project, Incoding Meta Language – front-end project and Incoding tests helpers – unit-tests for back-end. These packages are installed independently of each other, making it possible to integrate framework by parts into the project: You can connect only front or back end (tests are tightly coupled with the back end, so, they could be more considered as a complement).</p>
+<p style="text-align: justify;">Projects developed in <strong>Incoding Framework</strong>,<strong> </strong>use <a title="Martin Fowler: CQRS" href="http://martinfowler.com/bliki/CQRS.html" target="_blank">CQRS</a> as a server architecture. <a title="Habrahabr: Incoding rapid development framework" href="http://habrahabr.ru/post/209734/" target="_blank">Incoding Meta Language</a>.<strong>Incoding Framework </strong> is used as a basic tool for building front-end. All in all, Incoding Framework covers the entire application development cycle.</p>
+<p style="text-align: justify;">Typical solution, that was developed using Incoding Framework, comprises 3 projects:</p>
 
 <ol style="text-align: justify;">
-	<li style="text-align: justify;"><b>Domain (<em>class library) </em></b><em>- </em>отвечает за бизнес-логику и работу с базой данных.</li>
-	<li style="text-align: justify;"><b>UI (<em>ASP.NET MVC project</em>)<i> </i></b><i>- </i>клиентская часть, основанная на ASP.NET MVC.</li>
-	<li style="text-align: justify;"><strong>UnitTests (<em>class library</em>) </strong>- юнит-тесты для Domain.</li>
+	<li style="text-align: justify;"><b>1. Domain (<em>class library) </em></b><em>- </em>is responsible for business logic and database operations.</li>
+	<li style="text-align: justify;"><b>UI (<em>ASP.NET MVC project</em>)<i> </i></b><i>- </i>front-end based on ASP.NET MVC.</li>
+	<li style="text-align: justify;"><strong>UnitTests (<em>class library</em>) </strong>- unit-tests for Domain.</li>
 </ol>
 <h3 style="text-align: justify;">Domain</h3>
-<p style="text-align: justify;">После установки пакета <a title="Nuget: Incoding framework" href="https://www.nuget.org/packages/Incoding.Framework/" target="_blank">Incoding framework</a> через Nuget в проект помимо необходимых dll устанавливается файл Bootstrapper.cs. Основная задача этого файла - инициализация приложения: инициализация логирования, регистрация IoC, установка настроек Ajax-запросов и пр. В качестве IoC framework по умолчанию устанавливается <a title="StructureMap docs" href="http://docs.structuremap.net/">StructureMap</a>, однако есть провайдер для Ninject, а также есть возможность написания своих реализаций.</p>
+<p style="text-align: justify;">After installation of  <a title="Nuget: Incoding framework" href="https://www.nuget.org/packages/Incoding.Framework/" target="_blank">Incoding framework</a> through Nuget , along with the necessary dll, Bootstrapper.cs file will be added in the project. The file is mainly responsible for the initialization of an application: logging initialization, IoC registration, installation of Ajax-requests settings, etc. By default, <a title="StructureMap docs" href="http://docs.structuremap.net/">StructureMap</a>is installed as loC framework, but there is a provider for Ninject, and it is also possible to write your own implementations.</p>
 
-<pre class="lang:c# decode:true">namespace Example.Domain
+<pre class="lang:c# decode:true ">namespace Example.Domain
 {
     #region &lt;&lt; Using &gt;&gt;
 
@@ -43,7 +43,7 @@
     {
         public static void Start()
         {
-            //Инициализация LoggingFactory
+            //Initialize LoggingFactory
             LoggingFactory.Instance.Initialize(logging =&gt;
                 {
                     string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
@@ -52,7 +52,7 @@
                                                                                         () =&gt; "Debug_{0}.txt".F(DateTime.Now.ToString("yyyyMMdd")))));
                 });
 
-            //Инициализация IoCFactory
+            //Initialize IoCFactory
             IoCFactory.Instance.Initialize(init =&gt; init.WithProvider(new StructureMapIoCProvider(registry =&gt;
                 {
                     //Регистрация Dispatcher
@@ -73,7 +73,7 @@
                     registry.For&lt;IUnitOfWorkFactory&gt;().Use&lt;NhibernateUnitOfWorkFactory&gt;();
                     registry.For&lt;IRepository&gt;().Use&lt;NhibernateRepository&gt;();
 
-                    //Сканирование текущего Assembly и регистрация всех Validator'ов и Event Subscriber'ов
+                    //Scna currenlty Assembly and registrations all Validators and Event Subscribers
                     registry.Scan(r =&gt;
                                     {
                                         r.TheCallingAssembly();
@@ -88,21 +88,21 @@
             ModelValidatorProviders.Providers.Add(new FluentValidationModelValidatorProvider(new IncValidatorFactory()));
             FluentValidationModelValidatorProvider.Configure();
 
-            //Запуск всех SetUp на исполнение
+            //Execute all SetUp
             foreach (var setUp in IoCFactory.Instance.ResolveAll&lt;ISetUp&gt;().OrderBy(r =&gt; r.GetOrder()))
             {
                 setUp.Execute();
             }
 
             var ajaxDef = JqueryAjaxOptions.Default;
-            ajaxDef.Cache = false; //Отключение Ajax cache
+            ajaxDef.Cache = false; //Disable Ajax cache
         }
     }
 }</pre>
-<p style="text-align: justify;">Далее в <strong>Domain </strong>дописываются команды (Command) и запросы (Query), которые выполняют операции с базой данных либо какие-то другие действия, связанные с бизнес-логикой приложения.</p>
+<p style="text-align: justify;">Further on, commands (Command) and queries (Query) are added to Domain, that perform database operations or any action, related with business application logic.</p>
 
 <h3 style="text-align: justify;">UI</h3>
-<p style="text-align: justify;">Пакет <a title="Nuget: Incoding Meta Language" href="https://www.nuget.org/packages/Incoding.MetaLanguage/">Incoding Meta Language</a> при установке добавляет в проект необходимые dll, а также файлы IncodingStart.cs и DispatcherController.cs (часть <a title="Habrahabr: Model View Dispatcher (cqrs over mvc)" href="http://habrahabr.ru/post/221585/">MVD</a>) необходимые для работы с Domain.</p>
+<p style="text-align: justify;">During the installation of Package <a title="Nuget: Incoding Meta Language" href="https://www.nuget.org/packages/Incoding.MetaLanguage/">Incoding Meta Language</a> , it adds the necessary dll to the package, as well as IncodingStart.cs and DispatcherController.cs (part <a title="Habrahabr: Model View Dispatcher (cqrs over mvc)" href="http://habrahabr.ru/post/221585/">MVD</a>) files required to work Domain.</p>
 
 <pre class="lang:c# decode:true">public static class IncodingStart
 {
@@ -121,10 +121,10 @@
 
     #endregion
 }</pre>
-<p style="text-align: justify;">После установки в <strong>UI</strong> дописывается клиентская логика с использованием <a title="Habrahabr: Incoding rapid development framework" href="http://habrahabr.ru/post/209734/" target="_blank">IML</a>.</p>
+<p style="text-align: justify;">After the installation, the client logic is added to <strong>UI</strong> using <a title="Habrahabr: Incoding rapid development framework" href="http://habrahabr.ru/post/209734/" target="_blank">IML</a>.</p>
 
 <h3>UnitTests</h3>
-<p style="text-align: justify;">При установке <a title="Nuget: Incoding tests helpers" href="https://www.nuget.org/packages/Incoding.MSpecContrib/">Incoding tests helpers</a> в проект добавляется файл MSpecAssemblyContext.cs, в котором настраивается connection к тестовой базе данных.</p>
+<p style="text-align: justify;">During the installation of <a title="Nuget: Incoding tests helpers" href="https://www.nuget.org/packages/Incoding.MSpecContrib/">Incoding tests helpers</a>, the project is added by the MSpecAssemblyContext.csis file, in which connection is customize to the test dtabse.</p>
 
 <pre class="lang:c# decode:true">public class MSpecAssemblyContext : IAssemblyContext
 {
@@ -132,7 +132,7 @@
 
     public void OnAssemblyStart()
     {
-        //Настройка подключения к тестовой БД
+        //Configuration data base
         var configure = Fluently
                 .Configure()
                 .Database(MsSqlConfiguration.MsSql2008
@@ -147,41 +147,44 @@
 
     #endregion
 }</pre>
-<h2>Часть 1. Установка.</h2>
-<p style="text-align: justify;">Итак, приступим к выполнению поставленной в <em>disclamer </em>задаче - начнем писать наше приложение. Первый этап создания приложения - создание структуры solution'а проекта и добавление projects в него. Solution проекта будет называться <strong>Example </strong>и, как уже было сказано во введении, будет иметь три projects. Начнем с project'а, который будет отвечать за бизнес-логику приложения - с <strong>Domain.</strong></p>
-<p style="text-align: justify;">Создаем class library <strong>Domain</strong>.</p>
+<h2>Part 1. Installation.</h2>
+<p style="text-align: justify;">So, we proceed to the task of the <em>disclamer </em> and start writing our application. The first phase of building the application is to create solution structure of a project and to add the projects to it. The project solution will be called Example and, as was already mentioned in the introduction, will have 3 projects. We begin with the project that is responsible for business logic of the application - Domain.</p>
+<p style="text-align: justify;">Create class library <strong>Domain</strong>.</p>
 <p style="text-align: justify;"><a href="http://blog.incframework.com/wp-content/uploads/2015/06/Domain.png"><img class="aligncenter wp-image-1522 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Domain-e1433938652855.png" alt="Domain" width="800" height="553" /></a></p>
-<p style="text-align: justify;">Далее перейдем к клиентской части - создаем и устанавливаем как запускаемый пустой проект ASP.NET Web Application <b>UI </b>с сылками на MVC packages.</p>
+<p style="text-align: justify;">Then we proceed to the front-end – create and install ASP.NET Web Application UI with links to the MVC packages as template, empty project.</p>
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/UI1.png"><img class="aligncenter wp-image-1523 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/UI1-e1433938677813.png" alt="UI1" width="800" height="553" /></a>
 
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/UI2.png"><img class="aligncenter wp-image-1524 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/UI2-e1433938757884.png" alt="UI2" width="770" height="540" /></a>
-<p style="text-align: justify;">И наконец, добавим class library <strong>UnitTests, </strong>отвечающую за юнит-тестирование.</p>
+<p style="text-align: justify;">Finally, we add class library UnitTests that is responsible for unit testing.</p>
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/UnitTests.png"><img class="aligncenter wp-image-1525 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/UnitTests-e1433938798326.png" alt="UnitTests" width="800" height="553" /></a>
-<p style="text-align: justify;"><em><strong>Внимание: </strong>хотя юнит-тесты и не являются обязательной частью приложения, мы рекомендуем Вам всегда покрывать код тестами, так как это позволит в будущем избежать множества проблем с ошибками в коде за счет автоматизации тестирования.</em></p>
-<p style="text-align: justify;">После выполнения всех вышеперечисленных действий должен получится следующий Solution:</p>
-<a href="http://blog.incframework.com/wp-content/uploads/2015/06/Solution.png"><img class="aligncenter wp-image-1527 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Solution-e1433938901524.png" alt="Solution" width="664" height="547" /></a>
-<p style="text-align: justify;">После создания структуры Solution'а необходимо собственно установить пакеты <strong>Incoding Framework </strong>из Nuget в соответствующие projects.</p>
-<p style="text-align: justify;">Установка происходит через Nuget. Для всех projects алгоритм установки один:</p>
+<p style="text-align: justify;"><em><strong>Note: </strong>Alt<em>hough UnitTests are not an obligatory part of the application, we recommend you to cover the code with tests as it will help to avoid numerous problems in future with various possible faults in the code due to test automation. </em></em></p>
+After having finished all the above activities, you will get following solution:
 
+<a href="http://blog.incframework.com/wp-content/uploads/2015/06/Solution.png"><img class="aligncenter wp-image-1527 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Solution-e1433938901524.png" alt="Solution" width="664" height="547" /></a>
+
+After we create the solution structure, we need to install<strong> Incoding Framework</strong> package from Nuget.
+
+The installation carried out by Nuget. There is the same algorithm of installation for all the projects:
 <ol>
-	<li style="text-align: justify;">Кликните правой кнопкой по проекту и выберите в контекстном меню пункт <strong>Manage Nuget Packages...</strong></li>
-	<li style="text-align: justify;">В поиске введите <strong>incoding</strong></li>
-	<li style="text-align: justify;">Выберите нужный пакет и установите его</li>
+	<li>Right-click the project and select <strong>Manage Nuget Packages</strong>… in the context menu</li>
+	<li>Search <strong>incoding</strong></li>
+	<li>Select necessary package and install it</li>
 </ol>
-<p style="text-align: justify;">Сначала устанавливаем <a title="Incoding framework" href="https://www.nuget.org/packages/Incoding.Framework/">Incoding framework</a> в <strong>Domain</strong>.</p>
+First install <a title="Incoding framework" href="https://www.nuget.org/packages/Incoding.Framework/">Incoding framework</a> in <strong>Domain</strong>.
+
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/Incoding_framework_1.png"><img class="aligncenter wp-image-1530 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Incoding_framework_1-e1433940738743.png" alt="Incoding_framework_1" width="800" height="539" /></a>
-<p style="text-align: justify;">Далее добавляем в файл <strong>Domain -&gt; Infrastructure -&gt; Bootstrapper.cs</strong> ссылку на StructureMap.Graph.</p>
+<p style="text-align: justify;">Then add to the file <strong>Domain -&gt; Infrastructure -&gt; Bootstrapper.cs</strong> the link to StructureMap.Graph.</p>
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/StructureMap_ref.png"><img class="aligncenter wp-image-1531 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/StructureMap_ref-e1433940776329.png" alt="StructureMap_ref" width="800" height="63" /></a>
 
-В <strong>UI </strong>нужно установить два пакета:
+2 packages must be installed to UI:
 <ol>
 	<li><a title="Nuget: Incoding Meta Language" href="https://www.nuget.org/packages/Incoding.MetaLanguage/">Incoding Meta Language</a></li>
 	<li><a title="Nuget: Incoding Meta Language Contrib" href="https://www.nuget.org/packages/Incoding.MetaLanguage.Contrib/">Incoding Meta Language Contrib</a></li>
 </ol>
 <p style="text-align: justify;"><strong><img class="aligncenter wp-image-1539 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Incoding_Meta_Languge-e1433940844592.png" alt="Incoding_Meta_Languge" width="800" height="539" /></strong></p>
 <p style="text-align: justify;"><a href="http://blog.incframework.com/wp-content/uploads/2015/06/MetaLanguageContrib_install.png"><img class="aligncenter wp-image-1562 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/MetaLanguageContrib_install-e1433941058675.png" alt="MetaLanguageContrib_install" width="800" height="539" /></a></p>
-<p style="text-align: justify;"><b><i>Внимание: </i></b><i>убедитесь, что для References -&gt; System.Web.Mvc.dll свойство "Copy Local" установлено в "true"</i></p>
-<p style="text-align: justify;">Теперь файл <strong>Example.UI -&gt; Views -&gt; Shared -&gt; _Layout.cshtml </strong>измените таким образом, чтобы он выглядел так:</p>
+<p style="text-align: justify;"><b><i>Note: </i></b><i>make sure that the Copy Local property is set to true in the</i><i><em> References -&gt; System.Web.Mvc.dll</em></i></p>
+<p style="text-align: justify;">Now change the file  <strong>Example.UI -&gt; Views -&gt; Shared -&gt; _Layout.cshtml </strong>so that it looks as follows:</p>
 
 <pre class="lang:c# decode:true">@using Incoding.MvcContrib
 &lt;!DOCTYPE html&gt;
@@ -213,44 +216,46 @@
 @RenderBody()
 &lt;/body&gt;
 &lt;/html&gt;</pre>
-<p style="text-align: justify;">Осталось добавить ссылку на Bootstrapper.cs в файлы <b>Example.UI -&gt; App_Start -&gt; IncodingStart.cs </b>и <strong>Example.UI -&gt; Controllers -&gt; DispatcherController.cs</strong>.</p>
+Then add the link to Bootstrapper.cs to the files <strong>Example.UI -&gt; App_Start -&gt; IncodingStart.cs and Example.UI -&gt; Controllers -&gt; DispatcherController.cs.</strong>
+
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/IncodingStart_bootstrapper.png"><img class="aligncenter wp-image-1540 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/IncodingStart_bootstrapper-e1433941248848.png" alt="IncodingStart_bootstrapper" width="400" height="240" /></a>
 
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/DispatcherController_bootstrapper.png"><img class="aligncenter wp-image-1541 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/DispatcherController_bootstrapper-e1433941221806.png" alt="DispatcherController_bootstrapper" width="712" height="185" /></a>
-<p style="text-align: justify;"><em><strong>Внимание: </strong>если вы используете MVC5, то для работы framework'а необходимо добавить следующий код в файл Web.config</em></p>
+<p style="text-align: justify;"><em><strong>Note: </strong></em><em>If you use MVC5, it’s necessary for framework to add following code to Web.config file.</em></p>
 
 <pre class="lang:c# decode:true">&lt;dependentAssembly&gt;
   &lt;assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" culture="neutral" /&gt;
   &lt;bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" /&gt;
 &lt;/dependentAssembly&gt;</pre>
-<p style="text-align: justify;">Осталось установить <a title="Nuget: Incoding tests helpers" href="https://www.nuget.org/packages/Incoding.MSpecContrib/">Incoding tests helpers</a> в <strong>UnitTests </strong>и добавить ссылку на Bootstrapper.cs в <strong>Example.UnitTests -&gt; MSpecAssemblyContext.cs.</strong></p>
+<p style="text-align: justify;">Now install  <a title="Nuget: Incoding tests helpers" href="https://www.nuget.org/packages/Incoding.MSpecContrib/">Incoding tests helpers</a> in<strong>UnitTests </strong>and add the link to Bootstrapper.cs in Example.UnitTests -&gt; MSpecAssemblyContext.cs.</p>
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/Incoding_tests_helpers.png"><img class="aligncenter wp-image-1542 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Incoding_tests_helpers-e1433941531335.png" alt="Incoding_tests_helpers" width="800" height="539" /></a>
 
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/MSpecAssemblyContext_bootstrapper.png"><img class="aligncenter wp-image-1544 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/MSpecAssemblyContext_bootstrapper-e1433941543161.png" alt="MSpecAssemblyContext_bootstrapper" width="800" height="116" /></a>
-<p style="text-align: justify;">Последний этап подготовки проектов к работе - создание структуры папок для projects.</p>
-<p style="text-align: justify;">Добавьте следующие папки в проект <strong>Example.Domain:</strong></p>
 
-<ol style="text-align: justify;">
-	<li>Operations - command и query проекта</li>
-	<li>Persistences - сущности для маппинга БД</li>
-	<li>Specifications - where и order спецификации для фильтрации данных при запросах</li>
+The last phase of the preparation the projects to work is to create folders structure for the projects.
+
+Add following folders to the <strong>Example.Domain </strong>project:
+<ol>
+	<li>Operations – command and query of the project</li>
+	<li>Persistences – entities for DB mapping</li>
+	<li>Specifications – where and order specifications for data cleaning when request is made</li>
 </ol>
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/Example.Domain_folders.png"><img class="aligncenter wp-image-1557 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/Example.Domain_folders-e1433942308588.png" alt="Example.Domain_folders" width="350" height="154" /></a>
-<p style="text-align: justify;">В проекте <strong>Example.UnitTests</strong> создайте такую же структуру папок как и в <strong>Example.Domain.</strong></p>
+
+In the <strong>Example.UnitTests </strong>project create just the same folders structure as in <strong>Example.Domain.</strong>
+
 <a href="http://blog.incframework.com/wp-content/uploads/2015/06/UnitTests_folders.png"><img class="aligncenter wp-image-1558 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/UnitTests_folders-e1433942319802.png" alt="UnitTests_folders" width="310" height="172" /></a>
-<h1>Часть 2. Настройка DB connection.</h1>
-<p style="text-align: justify;">Для начала создадим БД, с которыми будем работать. Откройте SQL Managment Studio и создайте две базы данных: Example и Example_test.</p>
+<h1><strong>Part 2. Setting up a DB connection.</strong></h1>
+To begin this process, create DB with which you will work. Open SQL Managment Studio and create two DB: Example and Example_test.
 <p style="text-align: justify;"><a href="http://blog.incframework.com/wp-content/uploads/2015/06/add_DB1.png"><img class="aligncenter wp-image-1597 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/add_DB1-e1434366917892.png" alt="add_DB" width="525" height="291" /></a></p>
 <p style="text-align: justify;"><a href="http://blog.incframework.com/wp-content/uploads/2015/06/example_db.png"><img class="aligncenter wp-image-1598 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/example_db-e1434367010409.png" alt="example_db" width="525" height="471" /></a></p>
 <p style="text-align: justify;"><a href="http://blog.incframework.com/wp-content/uploads/2015/06/example_test_db.png"><img class="aligncenter wp-image-1599 size-full" src="http://blog.incframework.com/wp-content/uploads/2015/06/example_test_db-e1434367032172.png" alt="example_test_db" width="525" height="471" /></a></p>
-<p style="text-align: justify;">Для того чтобы работать с БД в необходимо настроить connection. Добавьте в файлы <strong>Example.UI -&gt; Web.config</strong> и <strong>Example.UnitTests -&gt; app.config</strong> connection string к базе данных:</p>
-
-<pre class="lang:c# decode:true ">  &lt;connectionStrings&gt;
+In order to work with DB, you need to set up a connection. Add to the file <strong>Example.UI -&gt; Web.config and Example.UnitTests -&gt; app.config connection </strong>string to the BD:
+<pre class="lang:c# decode:true">  &lt;connectionStrings&gt;
     &lt;add name="Example" connectionString="Data Source=INCODING-PC\SQLEXPRESS;Database=Example;Integrated Security=false; User Id=sa;Password=1" providerName="System.Data.SqlClient" /&gt;
     &lt;add name="Example_Test" connectionString="Data Source=INCODING-PC\SQLEXPRESS;Database=Example_Test;Integrated Security=true" providerName="System.Data.SqlClient" /&gt;
   &lt;/connectionStrings&gt;</pre>
-<p style="text-align: justify;">В файле <strong>Example.Domain -&gt; Infrastructure -&gt; Bootstrapper.cs </strong>зарегистрируйте по ключу "Example" соответствующую строку подключения:</p>
-
+In the file<strong> Example.Domain -&gt; Infrastructure -&gt; Bootstrapper.cs</strong>, register the appropriate connection string using a key called Example:
 <pre class="lang:c# decode:true">//Настройка FluentlyNhibernate
 var configure = Fluently
         .Configure()
@@ -258,8 +263,7 @@ var configure = Fluently
         .Mappings(configuration =&gt; configuration.FluentMappings.AddFromAssembly(typeof(Bootstrapper).Assembly))
         .ExposeConfiguration(cfg =&gt; new SchemaUpdate(cfg).Execute(false, true))
         .CurrentSessionContext(); //Настройка конфигурации базы данных</pre>
-<p style="text-align: justify;">В файле <strong>Example.UnitTests -&gt; MSpecAssemblyContext.cs </strong> зарегистрируйте по ключу "Example_Test" строку подключения к базе данных для тестов:</p>
-
+In the file <strong>Example.UnitTests -&gt; MSpecAssemblyContext.cs</strong>, register the connection string to the BD using the key called Example_test:
 <pre class="lang:c# decode:true">//Настройка подключения к тестовой БД
 var configure = Fluently
         .Configure()
@@ -267,11 +271,9 @@ var configure = Fluently
                                     .ConnectionString(ConfigurationManager.ConnectionStrings["Example_Test"].ConnectionString)
                                     .ShowSql())
         .Mappings(configuration =&gt; configuration.FluentMappings.AddFromAssembly(typeof(Bootstrapper).Assembly));</pre>
-<p style="text-align: justify;"><em><strong>Внимание:</strong> базы данных Example и Example_Test должны существовать.</em></p>
-
-<h1>Часть 3. CRUD.</h1>
-<p style="text-align: justify;">После выполнения всех приведенных выше действий мы подошли к самой интересной части - написанию кода, реализующего <strong>C</strong>reate<strong>R</strong>ead<strong>U</strong>pdate<strong>D</strong>elete-функционал приложения. Для начала необходимо создать класс сущности, которая будет маппиться на БД. В нашем случае это будет Human.cs, который добавим в папку <strong>Example.Domain -&gt; Persistences.</strong></p>
-
+<strong>Note</strong>: Example and Example_test databases must exist.
+<h1>Part 3. CRUD.</h1>
+After the actions described above, we come to the most interesting part – code writing implementing the CRUD (<strong>c</strong>reate, <strong>r</strong>ead, <strong>u</strong>pdate, <strong>d</strong>elete) functionality of an application. To begin this process, create an entity class that will map to the DB. In our case, this is Human.cs that we add to the <strong>Example.Domain -&gt; Persistences folder</strong>.
 <h6>Human.cs</h6>
 <pre class="lang:c# decode:true">namespace Example.Domain
 {
@@ -326,10 +328,9 @@ var configure = Fluently
         Female = 2
     }
 }</pre>
-<p style="text-align: justify;">Наш класс содержит несколько полей, в которые мы будем записывать данные, и вложенный класс маппинга (<i>class Map).</i></p>
-<p style="text-align: justify;"><em><strong>Заметка:</strong> после создания класса <strong>Human</strong> Вам больше не нужно производить никаких действий (дописывание xml-маппинга) благодаря <a title="Fluent Nhibernate" href="http://www.fluentnhibernate.org/">FluentNhibernate</a>.</em></p>
-<p style="text-align: justify;">Теперь добавим команды (Command) и запросы (Query), которые будут отвечать за реализацию CRUD-операций. Первая комманда будет отвечать за добавление новой или изменение существующей записи типа Human. Комманда довольно простая: мы либо получаем из Repository сущность по ключу (Id), либо, если такой сущности нет, создаем новую. В обоих случаях сущность получает значения, которые указаны в свойствах класса AddOrEditHumanCommand. Добавим файл  <strong>Example.Domain -&gt; Operations -&gt; AddOrEditHumanCommand.cs </strong>в проект.</p>
-
+Our class contains several fields where we will write data and Nested Class Map.
+<p style="text-align: justify;"><em><strong>Note:</strong> after creating the <strong>Human</strong> class, you do not need to perform any operations (creating an XML mapping) due to  <a title="Fluent Nhibernate" href="http://www.fluentnhibernate.org/">FluentNhibernate</a>.</em></p>
+We can now add commands and queries, which are responsible for realization of the CRUD operations. The first command will be responsible for adding a new or change an existing record of the Human type.  The command is quite simple: we either get an entity on a Repository using the key (ld) or, if no entity exist, we create a new one. Both of these entities get the values specified   in the properties of the AddOrEditHumanCommand class. Add <strong>Example.Domain -&gt; Operations -&gt; AddOrEditHumanCommand.cs to the project.</strong>
 <h6>AddOrEditHumanCommand.cs</h6>
 <pre class="lang:c# decode:true">namespace Example.Domain
 {
@@ -371,8 +372,7 @@ var configure = Fluently
         }
     }
 }</pre>
-<p style="text-align: justify;">Следующая часть CRUD - Read - запрос на чтение сущностей из базы. Добавьте файл <strong>Example.Domain -&gt; Operations -&gt; GetPeopleQuery.cs.</strong></p>
-
+The Read command is the second part of the CRUD. This is a request for reading entities from the DB. Add the file <strong>Example.Domain -&gt; Operations -&gt; GetPeopleQuery.cs</strong>.
 <h6>GetPeopleQuery.cs</h6>
 <pre class="lang:c# decode:true">namespace Example.Domain
 {
@@ -426,8 +426,7 @@ var configure = Fluently
         }
     }
 }</pre>
-<p style="text-align: justify;">И оставшаяся часть функционала - это Delete - удаление записей из БД по ключу (Id).  Добавьте файл <strong>Example.Domain -&gt; Operations -&gt; DeleteHumanCommand.cs.</strong></p>
-
+The Delete command is the remaining part of the CRUD. The command deletes records from the DB using the key (ld). Add the file <strong>Example.Domain -&gt; Operations -&gt; DeleteHumanCommand.cs</strong>.
 <h6>DeleteHumanCommand.cs</h6>
 <pre class="lang:c# decode:true">namespace Example.Domain
 {
@@ -451,8 +450,7 @@ var configure = Fluently
         }
     }
 }</pre>
-<p style="text-align: justify;">Для того чтобы наполнить БД начальными данными добавьте файл <strong>Example.Domain -&gt; InitPeople.cs </strong>- этот файл наследуется от интерфейса ISetUp.</p>
-
+In order to populate the DB with initial data, add the file <strong>Example.Domain -&gt; InitPeople.cs </strong>that is derived from the ISetUP interface.
 <h6 style="text-align: justify;">ISetup</h6>
 <pre class="lang:c# decode:true">using System;
 
@@ -465,8 +463,7 @@ namespace Incoding.CQRS
     void Execute();
   }
 }</pre>
-<p style="text-align: justify;">Все экземпляры классов, унаследованных от ISetUp, регистрируются через IoC в Bootstrapper.cs (был приведен во введении). После регистрации они запускаются на исполнение (public void Execute() ) по порядку (public int GetOrder() ).</p>
-
+All the class instances from the ISetUp are registered with IoC in the Bootstrapper.cs (see Introduction) and run (public void Execute() ) in order (public int GetOrder() ).
 <h6>InitPeople.cs</h6>
 <pre class="lang:c# decode:true">namespace Example.Domain
 {
@@ -490,14 +487,14 @@ namespace Incoding.CQRS
 
         public void Execute()
         {
-            //получение Dispatcher для выполнения Query и Command
+            //get Dispatcher for execute Query or Command
             var dispatcher = IoCFactory.Instance.TryResolve&lt;IDispatcher&gt;();
             
-            //не добавлять записи, если в базе есть хотя бы одна запись
+            //don't add new entity if exits
             if (dispatcher.Query(new GetEntitiesQuery&lt;Human&gt;()).Any())
                 return;
 
-            //добавление записей
+            //Adding new entity
             dispatcher.Push(new AddOrEditHumanCommand
                                 {
                                         FirstName = "Hellen",
@@ -515,16 +512,15 @@ namespace Incoding.CQRS
         }
     }
 }</pre>
-<p style="text-align: justify;">Back-end реализация CRUD готова. Теперь надо добавить клиентский код. Также как и в случае с серверной частью, начнем реализацию с части создания/редактирования записи. <span style="line-height: 1.5;">Добавьте файл </span><strong style="line-height: 1.5;">Example.UI -&gt; Views -&gt; Home -&gt; AddOrEditHuman.cshtml. </strong><span style="line-height: 1.5;">Представленный IML-код создает стандартную html-форму</span> и работает с командой AddOrEditHumanCommand, отправляя на сервер соответствующий Ajax-запрос.</p>
-
+The back-end implementation of the CRUD is ready. Now it is time to add a user code. As in the case of the back end, we begin the implementation with creating/editing a record. Add the file<strong> Example.UI -&gt; Views -&gt; Home -&gt; AddOrEditHuman.cshtml. </strong>
 <h6>AddOrEditHuman.cshtml</h6>
 <pre class="lang:c# decode:true">@using Example.Domain
 @using Incoding.MetaLanguageContrib
 @using Incoding.MvcContrib
 @model Example.Domain.AddOrEditHumanCommand
-@*Формирование формы для Ajax-отправки на выполнение AddOrEditHumanCommand*@
+@*Submit form for  AddOrEditHumanCommand*@
 @using (Html.When(JqueryBind.Submit)
-            @*Прерывание поведения по умолчанию и отправка формы через Ajax*@
+            @*Prevent default behavior and submit form by Ajax*@
             .PreventDefault()
             .Submit()
             .OnSuccess(dsl =&gt;
@@ -564,8 +560,9 @@ namespace Incoding.CQRS
               .ToButton("Cancel"))
     &lt;/div&gt;
 }</pre>
-<p style="text-align: justify;">Далее следует template, который является шаблоном для загрузки данных, полученных от GetPeopleQuery. Здесь описывается таблица, которая будет отвечать не только за вывод данных, но и за удаление и редактирование отдельных записей: добавьте файл <strong>Example.UI -&gt; Views -&gt; Home -&gt; HumanTmpl.cshtml.</strong></p>
+The IML-code creates the standard HTML form and works with AddOrEditHumanCommand, sending the appropriate Ajax query to the server.
 
+Then comes the template for data loading through the GetPeopleQuery. There is a description of the table that will be responsible not only for data output, but also for record deletion and editing: add the file <strong>Example.UI -&gt; Views -&gt; Home -&gt; HumanTmpl.cshtml.</strong>
 <h6>HumanTmpl.cshtml</h6>
 <pre class="lang:c# decode:true">@using Example.Domain
 @using Incoding.MetaLanguageContrib
@@ -608,7 +605,7 @@ namespace Incoding.CQRS
                         @each.For(r =&gt; r.Sex)
                     &lt;/td&gt;
                     &lt;td&gt;
-                        @*Кнопка открытия диалога для редактирования*@
+                        @*Open edit dialog form*@
                         @(Html.When(JqueryBind.Click)
                               .AjaxGet(Url.Dispatcher().Model&lt;AddOrEditHumanCommand&gt;(new
                                                                                          {
@@ -629,7 +626,7 @@ namespace Incoding.CQRS
                                                                                    }))
                               .AsHtmlAttributes()
                               .ToButton("Edit"))
-                        @*Кнопка удаления записи*@
+                        @*Button delete*@
                         @(Html.When(JqueryBind.Click)
                               .AjaxPost(Url.Dispatcher().Push(new DeleteHumanCommand() { HumanId = each.For(r =&gt; r.Id) }))
                               .OnSuccess(dsl =&gt; dsl.WithId("PeopleTable").Core().Trigger.Incoding())
@@ -642,9 +639,9 @@ namespace Incoding.CQRS
         &lt;/table&gt;
     }
 }</pre>
-Задача открытия диалогового окна достаточно распространена, поэтому код, отвечающий за это действие, можно вынести в <a title="Blog: Extensions" href="http://blog.incframework.com/ru/extensions/">extension</a>.
+<strong>Note:</strong> <em>The task of opening a dialog box is quite common, so the code that is responsible for this task can be exported to the extension. </em>
 
-Последняя часть - изменение стартовой страницы так, чтобы при ее загрузке выполнялся Ajax-запрос на сервер для получения данных от GetPeopleQuery и отображения их через HumanTmpl: измените файл <strong>Example.UI -&gt; Views -&gt; Home -&gt; Index.cshtml </strong>так, чтобы он соответствовал представленному ниже коду.
+Thus, it remains to change the start page so that during its loading AJAX query is transmitted to the server for obtaining data from the GetPeopleQuery and mapping of data using HumanTmpl: change the file <strong>Example.UI -&gt; Views -&gt; Home -&gt; Index.cshtml </strong>so that it looks as follows.
 <h6>Index.cshtml</h6>
 <pre class="lang:c# decode:true">@using Example.Domain
 @using Incoding.MetaLanguageContrib
@@ -653,13 +650,13 @@ namespace Incoding.CQRS
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 &lt;div id="dialog"&gt;&lt;/div&gt;
-@*Загрузка записей, полученных из GetPeopleQuery, через HumanTmpl*@
+@*Fetch data from GetPeopleQuery, through HumanTmpl*@
 @(Html.When(JqueryBind.InitIncoding)
       .AjaxGet(Url.Dispatcher().Query(new GetPeopleQuery()).AsJson())
       .OnSuccess(dsl =&gt; dsl.Self().Core().Insert.WithTemplateByUrl(Url.Dispatcher().AsView("~/Views/Home/HumanTmpl.cshtml")).Html())
       .AsHtmlAttributes(new { id = "PeopleTable" })
       .ToDiv())
-@*Кнопка добавления новой записи*@
+@*Button add*@
 @(Html.When(JqueryBind.Click)
       .AjaxGet(Url.Dispatcher().AsView("~/Views/Home/AddOrEditHuman.cshtml"))
       .OnSuccess(dsl =&gt; dsl.WithId("dialog").Behaviors(inDsl =&gt;
@@ -673,8 +670,7 @@ namespace Incoding.CQRS
                                                            }))
       .AsHtmlAttributes()
       .ToButton("Add new human"))</pre>
-<p style="text-align: justify;">В реальных приложениях валидация введенных данных форм - одна из самых частых задач. Поэтому добавим валидацию данных на форму добавления/редактирования сущности Human. Первая часть - добавление серверного кода.<strong> </strong>Добавьте следующий код в AddOrEditHumanCommand как nested class:</p>
-
+In real-world applications, validation of input form data is one of the most frequent task. Therefore, we add data validation on the adding/editing form of the Human entity. First, we need to add a server code. Add the following code in AddOrEditHumanCommand as a nested class:
 <pre class="lang:c# decode:true">#region Nested Classes
 
 public class Validator : AbstractValidator
@@ -691,20 +687,16 @@ public class Validator : AbstractValidator
 }
 
 #endregion</pre>
-<p style="text-align: justify;">На форме AddOrEditHuman.cshtml мы использовали конструкции вида:</p>
-
+On the AddOrEditHuman.cshtml form, we used constructs like this:
 <pre class="lang:c# decode:true">@Html.ForGroup()</pre>
-<p style="text-align: justify;">Поэтому нет необходимости дополнительно добавлять</p>
-
+It is therefore not necessary to add
 <pre class="lang:c# decode:true">@Html.ValidationMessageFor()</pre>
-<p style="text-align: justify;">для полей - <a title="Советы и подсказки" href="http://blog.incframework.com/ru/tips-and-trick/">ForGroup()</a> сделает это за нас.</p>
-<p style="text-align: justify;">Таким образом, мы написали код приложения, которое реализует CRUD-функционал для одной сущности БД.</p>
-
-<h1>Часть 4. Specifications - фильтрация данных.</h1>
-<p style="text-align: justify;">Еще одна из задач, которые часто встречаются в реальных проектах - фильтрация запрашиваемых данных. В Incoding Framework для удобства написания кода и соблюдения принципа инкапсуляции для фильтрации получаемых в Query данных используются WhereSpecifications. Добавим в написанный код возможность фильтрации получаемых в GetPeopleQuery данных по FirstName и LastName. В первую очередь добавим два файла спецификаций <strong>Example.Domain -&gt; Specifications -&gt; HumanByFirstNameWhereSpec.cs </strong>и <strong>Example.UI -&gt; Specifications -&gt; HumanByLastNameWhereSpec.cs</strong></p>
-
+<p style="text-align: justify;">for the fields - <a title="Советы и подсказки" href="http://blog.incframework.com/ru/tips-and-trick/">ForGroup()</a> will do it.</p>
+So we have written the application code that implements the CRUD functionality for one DB entity.
+<h1>Part 4. Specifications - data cleaning.</h1>
+Another task that often occurs in real projects is to clean requested data.  Incoding Framework uses WhereSpecifications for convenient code writing and complying an encapsulation principle for cleaning data from Query. In the written code add a possibility to clean data from GetPeopleQuery by FirstName and LastName. First, add two specification files <strong>Example.Domain -&gt; Specifications -&gt; HumanByFirstNameWhereSpec.cs </strong>and <strong>Example.UI -&gt; Specifications -&gt; HumanByLastNameWhereSpec.cs</strong>
 <h6 style="text-align: justify;">HumanByFirstNameWhereSpec.cs</h6>
-<pre class="lang:c# decode:true ">namespace Example.Domain
+<pre class="lang:c# decode:true">namespace Example.Domain
 {
     #region &lt;&lt; Using &gt;&gt;
 
@@ -777,7 +769,7 @@ public class Validator : AbstractValidator
         }
     }
 }</pre>
-Теперь используем написанные спецификации в запросе GetPeopleQuery. При помощи связок .Or()/.And() атомарные спецификации можно соединять в более сложные, что помогает использовать созданные спецификации многократно и при их помощи тонко настраивать необходимые фильтры данных (в нашем примере мы используем связку .Or() ).
+Now use the written specifications in GetPeopleQuery. .Or()/.And() relations allow to merge atomic specifications that helps to use the created specifications many times and fine-tune necessary data filters (in the example we use .Or() relation)
 <h6>GetPeopleQuery.cs</h6>
 <pre class="lang:c# decode:true ">namespace Example.Domain
 {
@@ -834,8 +826,7 @@ public class Validator : AbstractValidator
         }
     }
 }</pre>
-<p style="text-align: justify;">И наконец, осталось немного модифицировать Index.cshtml, чтобы добавить поисковую строку, задействующую при запросе поле Keyword для фильтрации данных.</p>
-
+Finally, it only remains to modify Index.cshtml in order to add a search box, which uses a Keyword field for data cleaning while a request is being processed.
 <h6>Index.cshtml</h6>
 <pre class="lang:c# decode:true">@using Example.Domain
 @using Incoding.MetaLanguageContrib
@@ -873,9 +864,8 @@ public class Validator : AbstractValidator
                                                            }))
       .AsHtmlAttributes()
       .ToButton("Add new human"))</pre>
-<h1>Часть 5. Юнит-тесты.</h1>
-<p style="text-align: justify;">Покроем написанный код тестами. Первый тест отвечает за проверку маппинга сущности Human. Файл When_save_Human.cs добавим в папку Persisteces проекта UnitTests.</p>
-
+<h1>Part 5. Unit-test.</h1>
+Let’s cover the written code with tests. The first one is responsible for testing of Human entity mapping. Add the file When_save_Human.cs to the folder Persisteces of the UnitTests project.
 <h6><b>When_save_Human.cs</b></h6>
 <pre class="lang:c# decode:true">namespace Example.UnitTests.Persistences
 {
@@ -897,9 +887,9 @@ public class Validator : AbstractValidator
         #endregion
     }
 }</pre>
-<p style="text-align: justify;">Данный тест работает с тестовой базой данных (Example_test): создается экземпляр класса Human с автоматически заполненными полями, сохраняется в базу, а затем извлекается и сверяется с созданным экземпляром.</p>
-<p style="text-align: justify;">Теперь добавим тесты для WhereSpecifications в папку Specifications.</p>
+The test works with a test database (Example_test): an instance of the Human class with automatically populated fields is created, then stored in the DB, retrieved from and compared to the created instance.
 
+Then add the tests for WhereSpecifications in a folder named Specifications.
 <h6><strong>When_human_by_first_name.cs</strong></h6>
 <pre class="lang:c# decode:true ">namespace Example.UnitTests.Specifications
 {
@@ -1008,10 +998,9 @@ public class Validator : AbstractValidator
         #endregion
     }
 }</pre>
-<p style="text-align: justify;">Теперь осталось добавить тесты для команды и запроса (папка Operations), причем для команды необходимо добавить два теста: один для проверки создания новой сущности и второй для проверки редактирования уже существующей сущности.</p>
-
+Now we have to add tests for the command and the query (Operations folder). For the command, you need to add two tests: the first one verifies the creation of a new entity; the second one verifies the editing of an existing entity.
 <h6><strong>When_get_people_query.cs</strong></h6>
-<pre class="lang:c# decode:true ">namespace Example.UnitTests.Operations
+<pre class="lang:c# decode:true">namespace Example.UnitTests.Operations
 {
     #region &lt;&lt; Using &gt;&gt;
 
@@ -1031,14 +1020,14 @@ public class Validator : AbstractValidator
         Establish establish = () =&gt;
                                   {
                                       var query = Pleasure.Generator.Invent&lt;GetPeopleQuery&gt;();
-                                      //Создание сущности для теста с автоматическим заполнением полей
+                                      //Create entity for test with auto-generate
                                       human = Pleasure.Generator.Invent&lt;Human&gt;();
 
                                       expected = new List&lt;GetPeopleQuery.Response&gt;();
 
                                       mockQuery = MockQuery&lt;GetPeopleQuery, List&lt;GetPeopleQuery.Response&gt;&gt;
                                               .When(query)
-                                              //"Заглушка" на запрос к репозиторию
+                                              //"Stub" on query to repository
                                               .StubQuery(whereSpecification: new HumanByFirstNameWhereSpec(query.Keyword)
                                                                  .Or(new HumanByLastNameWhereSpec(query.Keyword)),
                                                          entities: human);
@@ -1046,7 +1035,7 @@ public class Validator : AbstractValidator
 
         Because of = () =&gt; mockQuery.Original.Execute();
         
-        //Сравнение полученных данных
+        // Compare result 
         It should_be_result = () =&gt; mockQuery.ShouldBeIsResult(list =&gt; list.ShouldEqualWeakEach(new List&lt;Human&gt;() { human },
                                                                                                 (dsl, i) =&gt; dsl.ForwardToValue(r =&gt; r.Birthday, human.Birthday.ToShortDateString())
                                                                                                                .ForwardToValue(r =&gt; r.Sex, human.Sex.ToString())
@@ -1087,7 +1076,7 @@ public class Validator : AbstractValidator
 
                                       mockCommand = MockCommand&lt;AddOrEditHumanCommand&gt;
                                               .When(command)
-                                              //"Заглушка" на запрос к репозиторию
+                                              //"Stub" on repository
                                               .StubGetById&lt;Human&gt;(command.Id, null);
                                   };
 
@@ -1128,7 +1117,7 @@ public class Validator : AbstractValidator
 
                                       mockCommand = MockCommand&lt;AddOrEditHumanCommand&gt;
                                               .When(command)
-                                              //"заглушка" на запрос к репозиторию
+                                              //"Stub" on repository
                                               .StubGetById(command.Id, human);
                                   };
 
@@ -1147,15 +1136,14 @@ public class Validator : AbstractValidator
         #endregion
     }
 }</pre>
-<h1>Список материалов для изучения</h1>
+<h1>Study materials</h1>
 <ol>
-	<li><a title="Blog: IML, 5 причин использовать" href="http://blog.incframework.com/ru/5-killer-featuer-iml/">IML, 5 причин использовать</a> - клиентские сценарии</li>
-	<li><a title="Blog: CQRS расширенный курс" href="http://blog.incframework.com/ru/cqrs-advanced-course/">CQRS расширенный курс</a> - архитектура серверной части</li>
-	<li><a title="Blog: MVD" href="http://blog.incframework.com/ru/model-view-dispatcher/">MVD</a> - описание паттерна Model View Dispatcher</li>
-	<li><a title="Blog: Мощь селекторов" href="http://blog.incframework.com/ru/power-selector/">IML-селекторы</a> - описание использования селекторов в IML</li>
-	<li><a title="Blog:  Расширения" href="http://blog.incframework.com/ru/extensions/">Расширения</a> - помощь написания extensions для соблюдения принципа <a title="Wiki: DRY" href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself"><strong>D</strong>on't<strong>R</strong>epeat<strong>Y</strong>ourself</a></li>
-	<li><a title="Blog: Repository" href="http://blog.incframework.com/ru/repository/">Репозиторий</a> - описание реализации репозитория и приемов работы с ним</li>
-	<li><a title="Blog: Do,Action,Insert" href="http://blog.incframework.com/ru/do-action-insert/">Ajax-сценарии</a> - описание работы IML в связке с Ajax</li>
-	<li><a title="Blog: Клиентские template" href="http://blog.incframework.com/ru/client-template/">Шаблоны для вставки данных</a></li>
-	<li><a title="Blog: IncTesting" href="http://blog.incframework.com/ru/inc-testing/">Тестирование</a> и <a title="Blog: Тестовый сценарий command и query" href="http://blog.incframework.com/ru/command-test-scenario/">тестовые сценарии</a></li>
+	<li><a title="Cqrs vs N-layer" href="http://blog.incframework.com/en/cqrs-vs-n-layer/">CQRS </a> and <a title="CQRS advanced course" href="http://blog.incframework.com/en/cqrs-advanced-course/">CQRS </a>(advanced course) , <a title="Repository" href="http://blog.incframework.com/en/repository/">Repository </a>- back end architecture</li>
+	<li><a title="Blog: MVD" href="http://blog.incframework.com/en/model-view-dispatcher/">MVD</a> -a description of a Model View Dispatcher pattern</li>
+	<li><a title="IML TODO" href="http://blog.incframework.com/en/iml-todo/">IML </a>(TODO), <a title="AngularJs vs IML" href="http://blog.incframework.com/en/angularjs-vs-iml/">IML vs Angular</a> , <a title="Jquery vs IML" href="http://blog.incframework.com/en/jqyery-style-vs-iml-style/">Iml vs Jquery</a> , <a title="Ajax.ActionLink vs IML" href="http://blog.incframework.com/en/ajax-actionlink-vs-iml/">Iml vs ASP.NET Ajax</a> - incoding meta language</li>
+	<li><a title="Blog: Мощь селекторов" href="http://blog.incframework.com/en/power-selector/">IML</a> (selector)-  a description of the selectors’ usage in IML</li>
+	<li><a title="Do,Action,Insert" href="http://blog.incframework.com/en/do-action-insert/">IML In Ajax</a> - a description of the IML Operation in relation to Ajax</li>
+	<li><a title="Client template" href="http://blog.incframework.com/en/client-template/">IML template</a> - Templates for data insertion</li>
+	<li><a title="Extensions" href="http://blog.incframework.com/en/extensions/">Extensions</a>- help with writing extensions to  comply the <a title="Wiki: DRY" href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself"><strong>D</strong>on't<strong>R</strong>epeat<strong>Y</strong>ourself</a> principle</li>
+	<li><a title="Inc testing" href="http://blog.incframework.com/en/inc-testing/">Unit Test</a> and <a title="Command and query test scenario" href="http://blog.incframework.com/en/command-test-scenario/">Unit test scenario</a></li>
 </ol>
