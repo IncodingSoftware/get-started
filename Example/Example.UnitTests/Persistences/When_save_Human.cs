@@ -1,4 +1,4 @@
-﻿namespace Example.UnitTests.Persistences
+﻿namespace Example.UnitTests
 {
     #region << Using >>
 

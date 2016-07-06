@@ -40,16 +40,16 @@
 
         protected override List<Response> ExecuteResult()
         {
-            return Repository.Query(whereSpecification: new HumanByFirstNameWhereSpec(Keyword)
-                                            .Or(new HumanByLastNameWhereSpec(Keyword)))
+            return Repository.Query(whereSpecification: new Human.Where.ByFirstName(Keyword)
+                                            .Or(new Human.Where.ByLastName(Keyword)))
                              .Select(human => new Response
-                                                  {
-                                                          Id = human.Id,
-                                                          Birthday = human.Birthday.ToShortDateString(),
-                                                          FirstName = human.FirstName,
-                                                          LastName = human.LastName,
-                                                          Sex = human.Sex.ToString()
-                                                  }).ToList();
+                                              {
+                                                      Id = human.Id,
+                                                      Birthday = human.Birthday.ToShortDateString(),
+                                                      FirstName = human.FirstName,
+                                                      LastName = human.LastName,
+                                                      Sex = human.Sex.ToString()
+                                              }).ToList();
         }
     }
 }

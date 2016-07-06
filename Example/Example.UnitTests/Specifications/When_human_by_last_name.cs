@@ -1,4 +1,4 @@
-﻿namespace Example.UnitTests.Specifications
+﻿namespace Example.UnitTests
 {
     #region << Using >>
 
@@ -11,34 +11,34 @@
 
     #endregion
 
-    [Subject(typeof(HumanByLastNameWhereSpec))]
+    [Subject(typeof(Human.Where.ByLastName))]
     public class When_human_by_last_name
     {
         #region Fields
 
         Establish establish = () =>
-                                  {
-                                      Func<string, Human> createEntity = (lastName) =>
-                                                                         Pleasure.MockStrictAsObject<Human>(mock =>
-                                                                                                            mock.SetupGet(r => r.LastName)
-                                                                                                                .Returns(lastName));
+                              {
+                                  Func<string, Human> createEntity = (lastName) =>
+                                                                     Pleasure.MockStrictAsObject<Human>(mock =>
+                                                                                                        mock.SetupGet(r => r.LastName)
+                                                                                                            .Returns(lastName));
 
-                                      fakeCollection = Pleasure.ToQueryable(createEntity(Pleasure.Generator.TheSameString()),
-                                                                            createEntity(Pleasure.Generator.String()));
-                                  };
+                                  fakeCollection = Pleasure.ToQueryable(createEntity(Pleasure.Generator.TheSameString()),
+                                                                        createEntity(Pleasure.Generator.String()));
+                              };
 
         Because of = () =>
-                         {
-                             filterCollection = fakeCollection
-                                     .Where(new HumanByLastNameWhereSpec(Pleasure.Generator.TheSameString()).IsSatisfiedBy())
-                                     .ToList();
-                         };
+                     {
+                         filterCollection = fakeCollection
+                                 .Where(new Human.Where.ByLastName(Pleasure.Generator.TheSameString()).IsSatisfiedBy())
+                                 .ToList();
+                     };
 
         It should_be_filter = () =>
-                                  {
-                                      filterCollection.Count.ShouldEqual(1);
-                                      filterCollection[0].LastName.ShouldBeTheSameString();
-                                  };
+                              {
+                                  filterCollection.Count.ShouldEqual(1);
+                                  filterCollection[0].LastName.ShouldBeTheSameString();
+                              };
 
         #endregion
 

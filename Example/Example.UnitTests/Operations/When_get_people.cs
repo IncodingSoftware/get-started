@@ -1,4 +1,4 @@
-﻿namespace Example.UnitTests.Operations
+﻿namespace Example.UnitTests
 {
     #region << Using >>
 
@@ -16,16 +16,16 @@
         #region Fields
 
         Establish establish = () =>
-                                  {
-                                      var query = Pleasure.Generator.Invent<GetPeopleQuery>();
-                                      human = Pleasure.Generator.Invent<Human>();
+                              {
+                                  var query = Pleasure.Generator.Invent<GetPeopleQuery>();
+                                  human = Pleasure.Generator.Invent<Human>();
 
-                                      mockQuery = MockQuery<GetPeopleQuery, List<GetPeopleQuery.Response>>
-                                              .When(query)
-                                              .StubQuery(whereSpecification: new HumanByFirstNameWhereSpec(query.Keyword)
-                                                                 .Or(new HumanByLastNameWhereSpec(query.Keyword)),
-                                                         entities: human);
-                                  };
+                                  mockQuery = MockQuery<GetPeopleQuery, List<GetPeopleQuery.Response>>
+                                          .When(query)
+                                          .StubQuery(whereSpecification: new Human.Where.ByFirstName(query.Keyword)
+                                                             .Or(new Human.Where.ByLastName(query.Keyword)),
+                                                     entities: human);
+                              };
 
         Because of = () => mockQuery.Original.Execute();
 

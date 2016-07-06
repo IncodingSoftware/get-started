@@ -1,4 +1,4 @@
-﻿namespace Example.UnitTests.Operations
+﻿namespace Example.UnitTests
 {
     #region << Using >>
 
