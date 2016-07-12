@@ -4,24 +4,24 @@
 
 <ul>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/1.-Introduction">1. Introduction</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/1.-Introduction">1. Introduction</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/2.-Installation">2. Installation</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/2.-Installation">2. Installation</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/3.-Setting-up-a-DB-connection">3. Setting up a DB connection</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/3.-Setting-up-a-DB-connection">3. Setting up a DB connection</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/4.-CRUD">4. CRUD</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/4.-CRUD">4. CRUD</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/5.-Specifications:-data-filters">5. Specifications: data filters</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/5.-Specifications:-data-filters">5. Specifications: data filters</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/6.-Unit-tests">6. Unit tests</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/6.-Unit-tests">6. Unit tests</a>
 	</li>
 	<li>
-		<a href="https://github.com/Incoding-Software/Incoding-Framework/wiki/Additional-materials">Additional materials</a>
+		<a href="https://github.com/IncodingSoftware/get-started/wiki/Additional-materials">Additional materials</a>
 	</li>
 </ul>
